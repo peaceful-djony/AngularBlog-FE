@@ -1,15 +1,17 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import * as moment from 'moment';
 
 import {User} from "../../../shared/models/user";
-import {Observable} from "rxjs";
+import {Observable, Subject, throwError} from "rxjs";
 import {environment} from "../../../../environments/environment";
-import {tap, shareReplay} from "rxjs/operators";
+import {tap, shareReplay, catchError} from "rxjs/operators";
 import {Auth} from "../../../shared/models/auth";
 
 @Injectable()
 export class AuthService {
+
+  public error$: Subject<string> = new Subject<string>()
 
   private static get authUrl(): string {
     return environment.baseUrl + 'auth'
@@ -32,6 +34,7 @@ export class AuthService {
       .pipe(
         tap(AuthService.setToken),
         shareReplay(), // TODO from documentation
+        catchError(this.handleError.bind(this))
       )
   }
 
@@ -53,5 +56,19 @@ export class AuthService {
       localStorage.removeItem('auth-token')
       localStorage.removeItem('auth-token-exp')
     }
+  }
+
+  private handleError(errorResponse: HttpErrorResponse) {
+    const {message, code} = errorResponse.error
+
+    switch (code) {
+      case 'INVALID_CREDENTIALS':
+        this.error$.next(message)
+        break;
+      default:
+        this.error$.next(message)
+    }
+
+    return throwError(errorResponse)
   }
 }

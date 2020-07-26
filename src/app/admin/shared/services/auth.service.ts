@@ -29,7 +29,7 @@ export class AuthService {
   constructor(private http: HttpClient) {
   }
 
-  login(user: User): Observable<any> {
+  login(user: User): Observable<Auth> {
     return this.http.post<Auth>(AuthService.authUrl, user)
       .pipe(
         tap(AuthService.setToken),

@@ -61,7 +61,7 @@ const routes = [
     SharedModule
   ],
   exports: [RouterModule],
-  providers: [AuthService, AuthGuard]
+  providers: [AuthGuard]
 })
 export class AdminModule {
 }

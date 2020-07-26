@@ -3,6 +3,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 import {Post} from "../../shared/models/post";
 import * as moment from 'moment';
+import {PostsService} from "../../shared/services/posts.service";
 
 @Component({
   selector: 'app-create-page',
@@ -13,7 +14,7 @@ export class CreatePageComponent implements OnInit {
 
   form: FormGroup
 
-  constructor() {
+  constructor(private postService: PostsService) {
   }
 
   ngOnInit(): void {
@@ -37,6 +38,10 @@ export class CreatePageComponent implements OnInit {
       createdAt: moment(),
     }
 
-    console.log(post)
+    this.postService
+      .create(post)
+      .subscribe(() => {
+        this.form.reset()
+      })
   }
 }

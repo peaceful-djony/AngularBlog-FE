@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute, Router} from "@angular/router";
 
 import {User} from "../../shared/models/user";
 import {AuthService} from "../shared/services/auth.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'app-login-page',
@@ -47,20 +48,23 @@ export class LoginPageComponent implements OnInit {
     if (this.form.invalid)
       return;
 
-    this.submitted = true
-
     const user: User = {
       email: this.form.value.email,
       password: this.form.value.password
     }
 
-    this.authService.login(user).subscribe(() => {
+    this.submitted = true
+    this.authService.login(user)
+      .pipe(
+        finalize(() => {
+          this.submitted = false
+        })
+      )
+      .subscribe(() => {
         this.form.reset()
         this.router.navigate(['/admin', 'dashboard'])
-
-        this.submitted = false
       }, () => {
-        this.submitted = false
+        console.log("Login failed")
       }
     )
 

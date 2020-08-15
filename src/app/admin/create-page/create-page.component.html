@@ -31,24 +31,8 @@
     <quill-editor formControlName="text"></quill-editor>
   </div>
 
-  <div
-    class="form-control"
-    [ngClass]="{invalid: form.get('title').touched && form.get('title').invalid}"
-  >
-    <label for="author">Author:</label>
-    <input
-      id="author"
-      type="text"
-      formControlName="author"
-    >
-    <div
-      class="validation"
-      *ngIf="form.get('author').touched && form.get('author').invalid"
-    >
-      <small *ngIf="form.get('author').errors.required">
-        Author is required
-      </small>
-    </div>
+  <div class="form-control">
+    <label>Author is "{{author?.firstName}}"</label>
   </div>
 
   <button

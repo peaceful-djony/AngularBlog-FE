@@ -12,6 +12,7 @@ import {SharedModule} from "./shared/shared.module";
 import {PostsService} from "./shared/services/posts.service";
 import {AuthInterceptor} from "./shared/services/auth.interceptor";
 import {AuthService} from "./admin/shared/services/auth.service";
+import {AccountService} from "./shared/services/account.service";
 
 const INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -33,6 +34,7 @@ const INTERCEPTOR_PROVIDER: Provider = {
     SharedModule
   ],
   providers: [
+    AccountService,
     AuthService,
     PostsService,
     INTERCEPTOR_PROVIDER

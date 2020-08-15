@@ -13,7 +13,7 @@ export class AuthService {
 
   public error$: Subject<string> = new Subject<string>()
 
-  private static get authUrl(): string {
+  private static get serviceUrl(): string {
     return environment.baseUrl + 'auth'
   }
 
@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   login(user: User): Observable<Auth> {
-    return this.http.post<Auth>(AuthService.authUrl, user)
+    return this.http.post<Auth>(AuthService.serviceUrl, user)
       .pipe(
         tap(AuthService.setToken),
         shareReplay(), // TODO from documentation

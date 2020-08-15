@@ -4,6 +4,9 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Post} from "../../shared/models/post";
 import * as moment from 'moment';
 import {PostsService} from "../../shared/services/posts.service";
+import {AccountService} from "../../shared/services/account.service";
+import {Author} from "../../shared/models/author";
+import {tap} from "rxjs/operators";
 
 @Component({
   selector: 'app-create-page',
@@ -13,17 +16,26 @@ import {PostsService} from "../../shared/services/posts.service";
 export class CreatePageComponent implements OnInit {
 
   form: FormGroup
+  author: Author
 
-  constructor(private postService: PostsService) {
+  constructor(
+    private postService: PostsService,
+    private account: AccountService
+  ) {
   }
 
   ngOnInit(): void {
 
     this.form = new FormGroup({
       title: new FormControl(null, [Validators.required]),
-      text: new FormControl(null, [Validators.required]),
-      author: new FormControl(null, [Validators.required])
+      text: new FormControl(null, [Validators.required])
     })
+
+    this.account.getAuthor()
+      .pipe(
+        tap((author) => this.author = author)
+      )
+      .subscribe();
   }
 
   submit() {
@@ -33,8 +45,8 @@ export class CreatePageComponent implements OnInit {
 
     const post: Post = {
       title: this.form.value.title,
-      author: this.form.value.author,
-      text: this.form.value.text,
+      author: this.author,
+      content: this.form.value.text,
       createdAt: moment(),
     }
 
